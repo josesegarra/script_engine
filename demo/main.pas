@@ -10,8 +10,12 @@ type
   		TMyBits = set of TMyEnum; // = Byte in size
 
 var 	
-		shared_lib:string;
-		mylib_handle :TLibHandle=dynlibs.NilHandle;
+		shared_lib:string;													// Name of shared LIB
+		mylib_handle :TLibHandle=dynlibs.NilHandle;							// Lib Handle
+
+
+
+
 		compile: function(CString:Pchar):Pchar ; cdecl;
   		s:string;
 		tfIn: TextFile;
@@ -19,6 +23,7 @@ var
 		datFile : File of Byte;    
 		chrContent : Byte;
 		mbs: TMyBits;
+		c:pointer;
 
 // UTF-8  	1 byte: 0xxxxxxx
 //		  	2 byte: 110yyyyy 10xxxxxx
@@ -30,25 +35,13 @@ begin
 
 	if FileExists(shared_lib) then begin
 		mylib_handle := LoadLibrary(shared_lib);
-		Pointer(Compile):=DynLibs.GetProcedureAddress(mylib_handle,PChar('Compile'));
-		Compile('Hello');
+		compile:=nil;
+		c:=DynLibs.GetProcedureAddress(mylib_handle,PChar('Compile'));
+		Compile:=c;
+		Compile('------- Hello');
 	end else WriteLn('Shared LIB not found: '+shared_lib);
 
 	{*
- 	AssignFile(tfIn,'test.js');
-    reset(tfIn);
-    while not eof(tfIn) do
-    begin
-      readln(tfIn, s);
-      writeln(s);
-	  for i:=1 to length(s) do 
-	  begin
-		  write(s[i]+' '+IntToStr(ord(s[i]))+' ');
-	  end;
-	  writeln(' [CR]');
-    end;
-    CloseFile(tfIn);
-	*}
  	AssignFile(datFile,'test.js');
   	Reset(datFile);
    	while not eof(datFile)           				// keep reading as long as there is data to read
@@ -59,4 +52,5 @@ begin
      end;
 	CloseFile(datFile);
 	WriteLn('Done');
+	*}
 end.

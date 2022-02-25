@@ -1,7 +1,8 @@
 rm ./bin/*
 
-./fpc/ppcx64 @/mnt/c/projects/explore/MyScript-master/2022_Reboot/fpc/fpc.cfg -FE./bin -Tlinux ./lib/js.pas
-./fpc/ppcx64 @/mnt/c/projects/explore/MyScript-master/2022_Reboot/fpc/fpc.cfg -FE./bin -Tlinux ./demo/main.pas
+fpc -Px86_64 -Mdelphi -FU./dcu -FE./bin -ojs -Un -Tlinux ./lib/js.pas ./lib/jsFiles.pas
+echo "---------------"
+fpc -Px86_64 -Mdelphi -FU./dcu -FE./bin -omain -Tlinux ./demo/main.pas
 
 
 FILE=./bin/main

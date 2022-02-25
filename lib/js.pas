@@ -1,9 +1,12 @@
 library subs;
 
+uses jsFiles;
+
 function Compile(CString: PChar): PChar; cdecl;
+var source:TjsSourceFile;
 begin
-  WriteLn('Compiling ');
-  WriteLn(Cstring);
+  source:=TjsSourceFile.Create;
+  WriteLn('**** THIS IS SHARED LIB: '+Cstring);
   result:='Done';
 end;
 
