@@ -5,7 +5,7 @@ unit jsCompileContext;
 interface
 
 uses 
-		 SysUtils, Generics.Collections, Generics.Defaults,
+		 SysUtils,
 
  		js_interface  	in 'js_interface.pas',
 		jsDefinitions  	in 'jsDefinitions.pas',
