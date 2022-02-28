@@ -1,16 +1,36 @@
 library subs;
 
-uses jsFiles;
+uses  
+      js_interface        in 'js_interface.pas',
+      jsFiles             in 'jsFiles.pas',
+      jsCompileContext    in 'jsCompileContext.pas',
+      jsSingletons        in 'jsSingletons.pas';
 
-function Compile(CString: PChar): PChar; cdecl;
-var source:TjsSourceFile;
+
+function    JsNewCompileContext(name:pchar):TjsCompileContext;   cdecl;
 begin
-  source:=TjsSourceFile.Create;
-  WriteLn('**** THIS IS SHARED LIB: '+Cstring);
-  result:='Done';
+  result:=singletons.NewCompileContest(name);
 end;
 
+function    JsSetSource(context:TjsCompileContext;sourceName:pchar;source:pointer;size:longint):integer; cdecl;
+begin
+    result:=context.SetSource(sourceName,source,size);
+end;
+
+
+function   JsCompile(context:TjsCompileContext;sourceName:pchar):integer; cdecl;                               // Compiles a SOURCE FILE in a COMPILE CONTEXT
+begin
+  result:=context.Compile(sourceName);
+end;
+
+
+function JsSetSourceProvider(context:TjsCompileContext;provider:TJsOnSourceNeeded):integer; cdecl;              // Set SOURCE FILE PROVIDER in a COMPILE CONTEXT
+begin
+  result:=context.RegisterContentProvider(provider);
+end;
+
+
 exports
-  Compile;
+  JsNewCompileContext,JsSetSourceProvider,JsSetSource,JsCompile;
 
 end.

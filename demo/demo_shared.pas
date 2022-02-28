@@ -2,35 +2,54 @@ unit demo_shared;
 
 interface 
 
-uses SysUtils,DynLibs;
+uses SysUtils,DynLibs,
+			js_interface in '../lib/js_interface.pas',
+			demo_utils in 'demo_utils.pas';
 
 type
-		TShared_Lib:class
+
+	TShared_Lib=class
 		private	
-			function Location(name:string):string;
-			mylib_handle :TLibHandle=dynlibs.NilHandle;							// Lib Handle
+			handle:TLibHandle;																// Lib Handle
+			path:string;
+			function Load(fname:string):pointer;
 		public 
-			constructor Create(name:string);
+			NewCompileContext:TJsNewCompileContext;
+			SetSourceProvider:TJsSetSourceProvider;
+			Compile:TJsCompile;
+			SetSource:TJsSetSource;
+			constructor Create(fileName:string);
 			destructor  Destroy;	override;
 		end;
 
 implementation
 
-function OsExt:string
-begin
- 	{$IFDEF WINDOWS}return '.dll';{$ELSE}return '.so';{$ENDIFDEF}
- nd;
 
-function TShared_Lib.Location(name:string):string;
-var folder:string;
+function TShared_Lib.Load(fname:string):pointer;
 begin
-	
-	if FileExists(name) return name;
-	if FileExists('lib'+name) return name+'lib';
-	folder:=ExtractFilePath(paramstr(0));
-	if FileExists(folder+name) return folder+name;
-	
-	
+	result:=DynLibs.GetProcedureAddress(handle,PChar(fname));
+	if result=nil then raise Exception.Create('Could not find '+fname+' in '+path)
+	else WriteLn('***      Imported function '+fname);
+end;
+
+constructor TShared_Lib.Create(fileName:string);											// Load shared library
+begin
+	WriteLn('***  Loading shared library: '+fileName);									
+	path:=ExistsInLocation(fileName,TOnError.doThrow);									
+	handle := LoadLibrary(path);
+	NewCompileContext:=Load('JsNewCompileContext');
+	SetSourceProvider:=Load('JsSetSourceProvider');
+	Compile:=Load('JsCompile');
+	SetSource:=Load('JsSetSource');
+			
+end;
+
+destructor   TShared_Lib.Destroy;	
+begin
+
+end;
+
+	{*
 	shared_lib:=ExtractFilePath(paramstr(0))+'libjs.so';
 
 	if FileExists(shared_lib) then begin
@@ -40,8 +59,6 @@ begin
 		Compile:=c;
 		Compile('------- Hello');
 	end else WriteLn('Shared LIB not found: '+shared_lib);
+	*}
 
-	{*
- 	AssignFile(datFile,'test.js');
-  	Reset(datFile);
 end.

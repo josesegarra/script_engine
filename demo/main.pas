@@ -3,44 +3,39 @@ program JSHOST;
 
 // ONLY WINDOWS function Compile(CString: PChar): PChar; cdecl; external 'js.so' name 'Compile';
 
-uses SysUtils,DynLibs;
+uses 	SysUtils,			
+			js_interface in '../lib/js_interface.pas',
+			demo_shared in 'demo_shared.pas';
 
-type
-  		TMyEnum = (mb0, mb1, mb2, mb3, mb4, mb5, mb6, mb7);
-  		TMyBits = set of TMyEnum; // = Byte in size
-
-var 	
-		shared_lib:string;													// Name of shared LIB
-		mylib_handle :TLibHandle=dynlibs.NilHandle;							// Lib Handle
-
-
-
-
-		compile: function(CString:Pchar):Pchar ; cdecl;
-  		s:string;
-		tfIn: TextFile;
-  		i:integer;
-		datFile : File of Byte;    
-		chrContent : Byte;
-		mbs: TMyBits;
-		c:pointer;
 
 // UTF-8  	1 byte: 0xxxxxxx
 //		  	2 byte: 110yyyyy 10xxxxxx
 //		  	3 byte: 1110zzzz 10yyyyyy 10xxxxxx
 //			4 byte: 11110uuu 10uuzzzz 10yyyyyy 10xxxxxx
+
+
+var 
+	dll:TShared_Lib;
+    context:pointer;
+
+function OnSourceNeeded(context:pointer;srcName:pchar):integer; cdecl;
 begin
-	WriteLn('JavaScript compiler demo');
-	shared_lib:=ExtractFilePath(paramstr(0))+'libjs.so';
+	WriteLn('*********** CONTEXT REQUEST '+srcName);
+	result:=JS_OK;
+end;
 
-	if FileExists(shared_lib) then begin
-		mylib_handle := LoadLibrary(shared_lib);
-		compile:=nil;
-		c:=DynLibs.GetProcedureAddress(mylib_handle,PChar('Compile'));
-		Compile:=c;
-		Compile('------- Hello');
-	end else WriteLn('Shared LIB not found: '+shared_lib);
 
+
+
+begin
+	WriteLn('JavaScript compiler demo');																								// Log 	
+	dll:=TShared_Lib.Create('js.so');																									// Load DLL
+	context:=dll.NewCompileContext('main');																								// Create a context
+	if (dll.SetSourceProvider(context,OnSourceNeeded)<>JS_OK) then raise Exception.Create('Could NOT set SetSourceProvider');			// Set SOURCE provider
+	if (dll.Compile(context,'test.js')<>JS_OK) then raise Exception.Create('Could NOT compile test.js');								// Compile TEST.JS
+
+
+	
 	{*
  	AssignFile(datFile,'test.js');
   	Reset(datFile);

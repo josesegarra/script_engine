@@ -1,7 +1,9 @@
 unit jsFiles;
 
+
 interface
 
+{*
 uses classes;
 
 type
@@ -15,9 +17,9 @@ type
 			destructor  Destroy;	override;
 		end;
 
-    
+*}  
 implementation
-
+{*
 constructor TjsSourceFile.Create;
 begin
 	items:=TList.Create;
@@ -29,6 +31,7 @@ begin
 	inherited Destroy;
 end;
 
+*}
 
 initialization
 
