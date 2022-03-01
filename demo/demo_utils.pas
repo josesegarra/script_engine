@@ -9,7 +9,6 @@ type
 
     function Exists(fname: string):boolean;													// Returns if file exists or not
     function ExistsInLocation(fname:string;OnError:TOnError):string;					    // Check if file exists, if not check in current path
-    function LoadFile(filename:string):TMemoryStream;
 
 
 implementation
@@ -37,11 +36,6 @@ begin
 end;
 
 
-function LoadFile(filename:string):TMemoryStream;
-begin
-    result:=TMemoryStream.Create;
-    result.LoadFromFile(ExistsInLocation(filename,TOnError.doThrow));
-end;
 
 end.
 

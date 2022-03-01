@@ -41,7 +41,6 @@ begin
 	SetSourceProvider:=Load('JsSetSourceProvider');
 	Compile:=Load('JsCompile');
 	SetSource:=Load('JsSetSource');
-			
 end;
 
 destructor   TShared_Lib.Destroy;	

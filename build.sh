@@ -9,11 +9,16 @@ fpc -Px86_64 -Mdelphi -Cg -FU./dcu -FE./bin -omain -Tlinux ./demo/main.pas
 
 EXE=./bin/main
 DLL=./bin/js.so
+FILE=$1
+if [ -z "$FILE" ]; then
+    FILE=init.js
+fi
+
 if [ -f $EXE -a -f $DLL ]; then
         echo "---------------"
         echo "Compiled ok           "
         echo "                      "
-        $EXE
+        $EXE $FILE
     else
         echo "Compilation failed...."
         if [[ ! -f $EXE ]]; then echo "      Missing  $EXE"; fi

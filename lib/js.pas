@@ -2,13 +2,16 @@ library subs;
 
 uses  
       js_interface        in 'js_interface.pas',
-      jsFiles             in 'jsFiles.pas',
-      jsCompileContext    in 'jsCompileContext.pas',
-      jsSingletons        in 'jsSingletons.pas';
+      jsFiles             in 'jsfiles.pas',
+      jsCompileContext    in 'jscompilecontext.pas',
+      jsUtils             in 'jsutils.pas',
+      jsSingletons        in 'jssingletons.pas';
 
 
 function    JsNewCompileContext(name:pchar):TjsCompileContext;   cdecl;
+var pp:string='ABC Σὲ EF';
 begin
+  aShow(pbyte(pp));
   result:=singletons.NewCompileContest(name);
 end;
 

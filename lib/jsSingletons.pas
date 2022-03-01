@@ -3,8 +3,8 @@ unit jsSingletons;
 interface
 
 uses    classes,
-        jsUtils  in 'jsUtils.pas',
-        jsCompileContext in 'jsCompileContext.pas';
+        jsUtils  in 'jsutils.pas',
+        jsCompileContext in 'jscompilecontext.pas';
 
 type
 	TjsSingletons=class
